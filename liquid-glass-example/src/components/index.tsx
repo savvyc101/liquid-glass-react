@@ -1,6 +1,6 @@
-import { type CSSProperties, forwardRef, useCallback, useEffect, useId, useRef, useState } from "react"
-import { ShaderDisplacementGenerator, fragmentShaders } from "./shader-utils"
-import { displacementMap, polarDisplacementMap, prominentDisplacementMap } from "./utils"
+import { useId, useState, useRef, useCallback, useEffect, forwardRef, type CSSProperties } from "react"
+import { displacementMap, prominentDisplacementMap, polarDisplacementMap } from "./utils"
+import { ShaderDisplacementGenerator, fragmentShaders } from "./shaderUtils"
 
 // Generate shader-based displacement map using shaderUtils
 const generateShaderDisplacementMap = (width: number, height: number): string => {
@@ -171,6 +171,7 @@ const GlassContainer = forwardRef<
       glassSize = { width: 270, height: 69 },
       onClick,
       mode = "standard",
+      mouseOffset,
     },
     ref,
   ) => {
@@ -185,7 +186,7 @@ const GlassContainer = forwardRef<
         const url = generateShaderDisplacementMap(glassSize.width, glassSize.height)
         setShaderMapUrl(url)
       }
-    }, [mode, glassSize.width, glassSize.height])
+    }, [mode, mouseOffset, glassSize.width, glassSize.height])
 
     const backdropStyle = {
       filter: isFirefox ? null : `url(#${filterId})`,
@@ -298,9 +299,7 @@ export default function LiquidGlass({
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       const container = mouseContainer?.current || glassRef.current
-      if (!container) {
-        return
-      }
+      if (!container) { return }
 
       const rect = container.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
@@ -327,9 +326,7 @@ export default function LiquidGlass({
     }
 
     const container = mouseContainer?.current || glassRef.current
-    if (!container) {
-      return
-    }
+    if (!container) { return }
 
     container.addEventListener("mousemove", handleMouseMove)
 
