@@ -54,26 +54,31 @@ export default function GlassButton({
     }
   }
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = () => {
     if (loading || disabled) return
-    onClick?.(e)
+    onClick?.({} as React.MouseEvent<HTMLButtonElement>)
   }
 
   return (
-    <LiquidGlassBase
-      style={{
-        position: 'relative',
-        top: 'auto',
-        left: 'auto',
-        transform: 'none',
-        display: 'inline-block',
-        ...glassProps.style
-      }}
-      padding={sizeStyles[size].padding}
+    <div
       className={`glass-button ${variant} ${size} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-105'} transition-all duration-200 ${className}`}
-      {...variantPresets[variant]}
-      {...glassProps}
-      onClick={handleClick}
+      onClick={(e) => {
+        if (loading || disabled) return
+        onClick?.(e as any)
+      }}
+    >
+      <LiquidGlassBase
+        style={{
+          position: 'relative',
+          top: 'auto',
+          left: 'auto',
+          transform: 'none',
+          display: 'inline-block',
+          ...glassProps.style
+        }}
+        padding={sizeStyles[size].padding}
+        {...variantPresets[variant]}
+        {...glassProps}
     >
       <div className="relative z-10 flex items-center justify-center gap-2">
         {loading ? (
@@ -106,5 +111,6 @@ export default function GlassButton({
         )}
       </div>
     </LiquidGlassBase>
+    </div>
   )
 }
